@@ -6,8 +6,8 @@ API_SECRET = "RooSe7SdHmP3vQB1cshk2LxHZ5vY2lbjDu7v5cWD"
 market_status = False
 BASIC_URL = "https://paper-api.alpaca.markets/v2"
 counter = 0
-
-current = 0
+symbol = "AAPL"
+last_trade_url = f"https://data.alpaca.markets/v2/stocks/{symbol}/trades/latest"
 
 headers = {
     'APCA-API-KEY-ID': API_KEY,
@@ -15,8 +15,6 @@ headers = {
 }
 
 response = requests.get('https://paper-api.alpaca.markets/v2/clock', headers=headers)
-
-#print(response.status_code)
 
 if response.status_code == 200: 
   clock_info = response.json()
@@ -42,20 +40,17 @@ def PlaceBuyAAPL():
 
   ORDER_URL = "https://paper-api.alpaca.markets/v2/orders"
 
-    #THIS CODE BASICALLY GETS THE LAST TRADED STOCK'S PRICE
   last_trade_url = f"https://data.alpaca.markets/v2/stocks/{order_data['symbol']}/trades/latest"
   price = requests.get(last_trade_url, headers=headers)
   last_json_bought = price.json()
   last_trade_bought = last_json_bought['trade']
   last_bought = last_trade_bought['p']
-  print(last_bought)
-
 
   r = requests.post(ORDER_URL, json=order_data, headers=headers)
   
   print(f"{order_data['qty']} {order_data['symbol']} stock(s) bought at {last_bought} each!")
 
-  return r.content
+  return last_bought
 
 def PlaceSellAPPL():
   order_data = {
@@ -70,17 +65,101 @@ def PlaceSellAPPL():
 
   r = requests.post(ORDER_URL, json=order_data, headers=headers)
 
-  print("Stocks sold!")
+  print(order_data['qty'], order_data['symbol'], "stocks sold at", actual_price, "each!")
 
   return r.content
 
-if market_status == True:
-  while API_KEY == "PKMRS0PD5QOPSB14455X":
+def Strategy(counter):
+  while True:
+    current = requests.get(last_trade_url, headers=headers)
+    current_json = current.json()
+    current_price = current_json['trade']
+    actual_price = current_price['p']
+
     if counter == 0: 
-      PlaceBuyAAPL()
+      last_bought = PlaceBuyAAPL()
       counter += 1
-    #if last_bought > ()
+
+    print(actual_price)
+    time.sleep(30)
+
+    #Rule 1
+    #If we're winning money, wait for a maximmum and sell
+    #Then wait for a rise and buy
+
+    if actual_price > (last_bought * 1.001): #If we're winning money
+      true_var = True
+      last_won = actual_price
+
+      while true_var == True: #Wait for a fall
+        current = requests.get(last_trade_url, headers=headers)
+        current_json = current.json()
+        current_price = current_json['trade']
+        actual_price = current_price['p']
+
+        if actual_price < (last_won * 0.9999): #(CHANGE VALUE LATER) If fall, then sell
+          PlaceSellAPPL()
+          print("Sold at a benefit!")
+
+          while true_var == True: #Also, wait for a rise again to buy
+            current = requests.get(last_trade_url, headers=headers)
+            current_json = current.json()
+            current_price = current_json['trade']
+            actual_price = current_price['p']
+
+            if actual_price > (last_won * 1.001): #(CHANGE VALUE LATER) If rise, buy
+              PlaceBuyAAPL()
+              true_var = False
+
+            else: 
+              last_won = actual_price
+              time.sleep(15)
+              
+        else: 
+          last_won = actual_price
+          time.sleep(15)
+            
+    #Rule 2
+    #If we're loosing money, do not wait, sell inmediately
+    #Wait for a minnimum to buy, but if fall continues sell inmediately
+
+    if actual_price < (last_bought * 0.999): #If we're loosing money
+      true_var = True
+      last_lost = actual_price
+      time.sleep(5) #Wait for the price to change
+      current = requests.get(last_trade_url, headers=headers)
+      current_json = current.json()
+      current_price = current_json['trade']
+      actual_price = current_price['p']
+
+      if actual_price < last_lost: # If we're still loosing
+        PlaceSellAPPL() # Sell at a loss
+        #WAIT FOR A RISE
+
+      elif actual_price >= last_lost: #However, if we're suddenly winning
+        while true_var == True:
+          current = requests.get(last_trade_url, headers=headers)
+          current_json = current.json()
+          current_price = current_json['trade']
+          actual_price = current_price['p']
+
+          if actual_price < (last_lost * 0.999): #(CHANGE VALUE LATER) Wait for a fall
+            PlaceSellAPPL() # Sell at a win
+            #WAIT FOR A RISE
+          else:
+            last_lost = actual_price
+            time.sleep(5)
+
+    #Rule 3
+    #If market is going to close, sell (?)
     
+    
+    
+
+
+if market_status == True:
+  Strategy(counter)
 else: 
   print("Market is down, cannot buy.")
+
 
