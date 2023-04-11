@@ -26,13 +26,12 @@ if clock_info['is_open'] == True:
   market_status = True
 else:
   print("The Market is closed!")
-  market_status = False
 
 
-def PlaceBuyAAPL():
+def PlaceBuyAAPL(actual_price):
   order_data = {
       "symbol": "AAPL",
-      "qty": 1,
+      "qty": 30,
       "side": "buy",
       "type": "market",
       "time_in_force": "day",
@@ -40,22 +39,16 @@ def PlaceBuyAAPL():
 
   ORDER_URL = "https://paper-api.alpaca.markets/v2/orders"
 
-  last_trade_url = f"https://data.alpaca.markets/v2/stocks/{order_data['symbol']}/trades/latest"
-  price = requests.get(last_trade_url, headers=headers)
-  last_json_bought = price.json()
-  last_trade_bought = last_json_bought['trade']
-  last_bought = last_trade_bought['p']
-
   r = requests.post(ORDER_URL, json=order_data, headers=headers)
   
-  print(f"{order_data['qty']} {order_data['symbol']} stock(s) bought at {last_bought} each!")
+  print(f"{order_data['qty']} {order_data['symbol']} stock(s) bought at {actual_price} each!")
 
-  return last_bought
+  return actual_price
 
-def PlaceSellAPPL():
+def PlaceSellAPPL(actual_price):
   order_data = {
       "symbol": "AAPL",
-      "qty": 1,
+      "qty": 30,
       "side": "sell",
       "type": "market",
       "time_in_force": "day",
@@ -67,7 +60,7 @@ def PlaceSellAPPL():
 
   print(order_data['qty'], order_data['symbol'], "stocks sold at", actual_price, "each!")
 
-  return r.content
+  return actual_price
 
 
 def WaitForRise(last_value): 
@@ -80,7 +73,7 @@ def WaitForRise(last_value):
     actual_price = current_price['p']
 
     if actual_price > (last_value * 1.001): #(CHANGE VALUE LATER) If rise, then buy
-      last_bought = PlaceBuyAAPL()  #Prone to error !!!!!!!!
+      last_bought = PlaceBuyAAPL(actual_price)  #Prone to error !!!!!!!!
       true_var = False
 
     else: 
@@ -98,7 +91,7 @@ def WaitForFall(last_value):
     actual_price = current_price['p']
 
     if actual_price < (last_value * 0.9999): #(CHANGE VALUE LATER) If fall, then sell
-      PlaceSellAPPL()
+      PlaceSellAPPL(actual_price)
       true_var = False
         
     else: 
@@ -114,7 +107,7 @@ def Strategy(counter):
     actual_price = current_price['p']
 
     if counter == 0: 
-      last_bought = PlaceBuyAAPL()
+      last_bought = PlaceBuyAAPL(actual_price)
       counter += 1
 
     print(actual_price)
@@ -143,7 +136,7 @@ def Strategy(counter):
       actual_price = current_price['p']
 
       if actual_price < last_lost: # If we're still loosing
-        PlaceSellAPPL() # Sell at a loss
+        PlaceSellAPPL(actual_price) # Sell at a loss
         WaitForRise(actual_price) 
 
       elif actual_price >= last_lost: #However, if we're suddenly winning
@@ -159,5 +152,3 @@ if market_status == True:
   Strategy(counter)
 else: 
   print("Market is down, cannot buy.")
-
-

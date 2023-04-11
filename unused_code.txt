@@ -1,0 +1,56 @@
+First Strategy
+
+if actual_price > (last_bought * 1.001):
+  PlaceSellAPPL()
+  print("Sold because benefit!")
+  time.sleep(120)
+  last_bought == PlaceBuyAAPL()
+
+if actual_price < (last_bought * 0.999):
+  PlaceSellAPPL()
+  print("Sold because loss...")
+  print(last_bought, actual_price)
+  time.sleep(300)
+  last_bought == PlaceBuyAAPL()
+
+Stuff to do 
+
+1. Organize the "actual_price" things into a def to not repeat that much code
+2. Finish current rules
+3. Make a def for "WAIT FOR A RISE" and "WAIT FOR A FALL"
+4. Do more rules
+5. Organize everything
+
+
+New Strat: Highest Highs and Lowest Lows
+
+We cannot perfectly describe a low point, so:
+
+0. If we buy and instantly start falling, wait some time, if we're still loosing:
+  a) Set a new floor and lose that bit of money (WE CAN'T DEFINE A NEW FLOOR BECAUSE WE WOULD HAVE TO WAIT TO STOP LOOSING)
+  b) Sell, and wait for a rise to buy (not sustainable, perpetual loss possible)
+  But if we're suddenly rising, leave it.
+
+Having entered the market correctly on an uptrend: 
+
+- Note: Our Lowest Low isn't supposed to change, it is what it's set to be
+
+1. Buy at a low point and mark it as the lowest low (with the previous problem)
+
+2. Wait for a Highest High and mark it as such
+
+3. Get the difference between the lowest low and the highest High; that's our window,
+
+Sell (on a benefit) if: 
+
+  a) We go below 60% of the window (to be adjusted)
+  b) We go above 150%, WAIT FOR A FALL (to be adjusted)
+
+
+
+
+
+
+
+
+
