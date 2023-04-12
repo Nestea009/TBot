@@ -22,45 +22,37 @@ Stuff to do
 5. Organize everything
 
 
-New Strat: Highest Highs and Lowest Lows
+    #Rule 1
+    #If we're winning money, wait for a maximmum and sell
+    #Then wait for a rise and buy
 
-We cannot perfectly describe a low point, so:
+    if actual_price > (last_bought * 1.001): #If we're winning money
 
-0. If we buy and instantly start falling, wait some time, if we're still loosing:
-  a) Set a new floor and lose that bit of money (great fall could be ahead, and we would lose a lot of money)
-  b) Sell, and wait for a rise to buy (not sustainable, perpetual loss possible)
-  But if we're suddenly rising, leave it.
+      WaitForFall(actual_price)
+      WaitForRise(actual_price)
+            
+    #Rule 2
+    #If we're loosing money, do not wait, sell inmediately
+    #Wait for a minnimum to buy, but if fall continues sell inmediately
 
-Having entered the market correctly on an uptrend: 
+    if actual_price < (last_bought * 0.999): #If we're loosing money
+      true_var = True
+      last_lost = actual_price
+      time.sleep(5) #Wait for the price to change
+      current = requests.get(last_trade_url, headers=headers)
+      current_json = current.json()
+      current_price = current_json['trade']
+      actual_price = current_price['p']
 
-- Note: Our Lowest Low isn't supposed to change, it is what it's set to be
+      if actual_price < last_lost: # If we're still loosing
+        PlaceSellAPPL(actual_price) # Sell at a loss
+        WaitForRise(actual_price) 
 
-1. Buy at a low point and mark it as the lowest low (with the previous problem)
-
-2. Wait for a Highest High and mark it as such
-
-3. Get the difference between the lowest low and the highest High; that's our window,
-
-Sell (on a benefit) if: 
-
-  a) We go below 60% of the window (to be adjusted)
-  b) We go above 150%, WAIT FOR A FALL (to be adjusted)
-
-Problem: We cannot determine when to start buying
-Solution: Learn to determine a rising pattern
-
-- A rising trend is defined as a series of highs and lows that are 
-higher than the last high and the last low. The trend continues if the 
-previous condition is met, but will fail to do so as soon as a 
-new high doesn't go higher than the previous. 
-
-- This definition won't give us a clear idea of when to buy and sell, 
-because that's what our strategy does, this definition will 
-give us a clear understanding of when to buy with a clear view 
-towards an uptrend. :)
+      elif actual_price >= last_lost: #However, if we're suddenly winning
+        WaitForFall(actual_price)
+        WaitForRise(actual_price) 
 
 
-
-
-
+    #Rule 3
+    #If market is going to close, sell (?)
 

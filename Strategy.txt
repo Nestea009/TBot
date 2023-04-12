@@ -1,0 +1,40 @@
+New Strat: Highest Highs and Lowest Lows
+
+We cannot perfectly describe a low point, so:
+
+0. If we buy and instantly start falling, wait some time, if we're still loosing:
+  a) Set a new floor and lose that bit of money (great fall could be ahead, and we would lose a lot of money)
+  b) Sell, and wait for a rise to buy (not sustainable, perpetual loss possible)
+  But if we're suddenly rising, leave it.
+
+Having entered the market correctly on an uptrend: 
+
+- Note: Our Lowest Low isn't supposed to change, it is what it's set to be
+
+1. Buy at a low point and mark it as the lowest low (with the previous problem)
+
+2. Wait for a Highest High and mark it as such
+
+3. Get the difference between the lowest low and the highest High; that's our window,
+
+Sell (on a benefit) if: 
+
+  a) We go below 60% of the window (to be adjusted)
+  b) We go above 150%, WAIT FOR A FALL (to be adjusted)
+
+Problem: We cannot determine when to start buying
+Solution: Learn to determine a rising pattern
+
+- A rising trend is defined as a series of highs and lows that are 
+higher than the last high and the last low. The trend continues if the 
+previous condition is met, but will fail to do so as soon as a 
+new high doesn't go higher than the previous. Note: a lower low doesn't affect
+the trend unless it goes too far down (unlikely).
+
+- This definition won't give us a clear idea of when to buy and sell, 
+because that's what our strategy does, this definition will 
+give us a clear understanding of when to buy with a clear view 
+towards an uptrend. :)
+
+Algorithmic Solution: Wait for a low, a high, a new low and a new high. If
+the conditions are such of an uptrend, buy, if they're not, repeat. 
