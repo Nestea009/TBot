@@ -110,7 +110,9 @@ def WaitForFall():  # Probably Wrong
       count = 0
 
 def FindHighestHigh():
-  return "ERR"
+  #Find 5 values without loosing 15% of the Lowest Low and the highest will be the initial highest high. 
+  #initial_highest_high = (highest value)
+  return initial_highest_high
 
 
 def UptrendDetector():
@@ -140,9 +142,21 @@ def Strategy(counter):
       if counter == 0: 
         lowest_low = PlaceBuyAAPL(actual_price)
         print("Looking for a window...")
-
+        last_highest_high = FindHighestHigh()
         print("Window found!")
         counter += 1
+
+      window = last_highest_high - lowest_low
+
+      if (actual_price > last_highest_high) and (actual_price !> (initial_highest_high * 1.25)):
+        last_highest_high = actual_price 
+      elif actual_price > (initial_highest_high * 1.25)
+        higher_high = actual price 
+
+      if actual_price < (lowest_low * 0.9):
+        PlaceSellAPPL()
+        counter = 0 #Revise this
+        print ("Sold at a loss")
 
       print(actual_price)
       time.sleep(30)

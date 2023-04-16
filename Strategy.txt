@@ -60,5 +60,26 @@ it's possible that we never reach the high point
 set as a minnimum or even lose money without ever 
 getting to the minnimum either. 
 
-Solution: 
+Solution: You dumb bitch, we don't need to sell: 
+A highest high is just the highest point until now.
+
+def FindHighestHigh():
+  #Find 5 values without loosing 15% of the Lowest Low and the highest will be the initial highest high. 
+  initial_highest_high = (highest value)
+  return initial_highest_high
+
+last_highest_high = FindHighestHigh()
+
+if (actual_price > last_highest_high) and (actual_price !> (initial_highest_high * 1.25)):
+  last_highest_high = actual_price 
+elif actual_price > (initial_highest_high * 1.25)
+  higher_high = actual price 
+
+window = last_highest_high - lowest_low
+
+if actual_price < (lowest_low * 0.9):
+  PlaceSellAPPL()
+  print ("Sold at a loss")
+
+
 
