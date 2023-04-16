@@ -5,7 +5,6 @@ API_KEY = "PKMRS0PD5QOPSB14455X"
 API_SECRET = "RooSe7SdHmP3vQB1cshk2LxHZ5vY2lbjDu7v5cWD"
 market_status = False
 BASIC_URL = "https://paper-api.alpaca.markets/v2"
-counter = 0
 symbol = "AAPL"
 last_trade_url = f"https://data.alpaca.markets/v2/stocks/{symbol}/trades/latest"
 
@@ -71,73 +70,83 @@ def FindPrice():
   return actual_price
 
 
-def WaitForRise(last_value): 
+def WaitForRise(): 
   true_var = True
+  count = 0
+  initial_value = FindPrice()
 
   while true_var == True: #Wait for a rise to buy
     actual_price = FindPrice()
 
-    if actual_price > (last_value * 1.0001): #(CHANGE VALUE LATER) If rise, then buy
-      last_bought = PlaceBuyAAPL(actual_price)  #Prone to error !!!!!!!!
-      return last_bought
-      true_var = False
+    if actual_price > (initial_value * 1.05): #(CHANGE VALUE LATER) If rise, then buy
+      return actual_price # A rise has been found
 
     else: 
-      last_value = actual_price
+      count += 1
       time.sleep(10)
+
+    if count >= 20:
+      initial_value = FindPrice()
+      count = 0
       
 
-def WaitForFall(last_value):  # Probably Wrong
+def WaitForFall():  # Probably Wrong
   true_var = True
+  count = 0
+  initial_value = FindPrice()
 
   while true_var == True: #Wait for a fall
     actual_price = FindPrice()
 
-    if actual_price < (last_value * 0.9999): #(CHANGE VALUE LATER) If fall, then sell
-      last_sold = PlaceSellAPPL(actual_price)
-      return last_sold
-      true_var = False
+    if actual_price < (initial_value * 0.95): #(CHANGE VALUE LATER) If fall, then sell
+      return actual_price # A fall has been found
         
     else: 
-      last_value = actual_price
+      count += 1
       time.sleep(15)
+
+    if count >= 20:
+      initial_value = FindPrice()
+      count = 0
+
+def FindHighestHigh():
+  return "ERR"
+
 
 def UptrendDetector():
   print("Waiting for an uptrend to buy...")
   
   while True:
-    actual_price = FindPrice()
-    first_low = WaitForRise(actual_price)
+    first_low = WaitForRise()
 
-    actual_price = FindPrice()
-    first_high = WaitForFall(actual_price)
+    first_high = WaitForFall()
     
-    actual_price = FindPrice()
-    new_low = WaitForRise(actual_price)
+    new_low = WaitForRise()
 
-    actual_price = FindPrice()
-    new_high = WaitForFall(actual_price)
+    new_high = WaitForFall()
 
     if (new_high > first_high) and (new_low > first_low):
       return True
 
 def Strategy(counter):
   while True:
-    uptrend = False
+    uptrend = UptrendDetector()
+    counter = 0
 
-    actual_price = FindPrice()
+    while uptrend == True:
 
-    if counter == 0: 
-      last_bought = PlaceBuyAAPL(actual_price)
-      counter += 1
+      actual_price = FindPrice()
 
-    print(actual_price)
-    time.sleep(30)
+      if counter == 0: 
+        lowest_low = PlaceBuyAAPL(actual_price)
+        print("Looking for a window...")
 
-    while (uptrend == False):
+        print("Window found!")
+        counter += 1
 
+      print(actual_price)
+      time.sleep(30)
 
-    
 
 if market_status == True:
   Strategy(counter)

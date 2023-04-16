@@ -38,3 +38,27 @@ towards an uptrend. :)
 
 Algorithmic Solution: Wait for a low, a high, a new low and a new high. If
 the conditions are such of an uptrend, buy, if they're not, repeat. 
+
+- Our Window will be defined as the interval between a lowest low and a 
+highest high. Our strategy will take advantage of this window so that if 
+the price falls below 50% (adjustable) of the maximum profit (aka, the window)
+we sell at a Minimum Win. However, if instead of passing below 50% we go above 
+125% (also adjustable) we will change the window to the new highest high and 
+the price sell limit to 90% instead of 50%. 
+(Note that the highest high will always be renewed if the price goes up
+until it reaches 125% of the initial highest high)
+
+Problem: Finding a Highest High
+
+- Besides a highest high being easily defined, it is hard to 
+determine when one has happened via numbers. If we define it 
+as a fall from the previous price we risk perpetual loss.
+(It could lose at a slower rate than we need to say that 
+a highest high has happened)
+But if we define it according to the Lowest Low, 
+it's possible that we never reach the high point 
+set as a minnimum or even lose money without ever 
+getting to the minnimum either. 
+
+Solution: 
+
