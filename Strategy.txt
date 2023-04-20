@@ -81,5 +81,43 @@ if actual_price < (lowest_low * 0.9):
   PlaceSellAPPL()
   print ("Sold at a loss")
 
+Idea: As soon as we find a low lower than the last low, we sell 
+
+- In order to do that we would need to keep track of the lows (hard)
+
+- If we manage to do it, we could potentially notice different lows 
+and notice when a low is lower than the last one, such as that if 
+the difference is too much, we would sell because of a 
+Potential Loss.
+
+- The ideal range for now is 
+
+if new_low < (last_low * 0.9): 
+  PlaceSellAPPL()
+  print("Sold because of potential loss")
+  uptrend = False
+
+
+Essential Concept: When to sell 
+
+At a benefit: 
+
+- Being that we're on an uptrend, we want to 
+notice all the highs and lows and mark them 
+as such. Then sell whenever a new high is not 
+as high as the last by a big enough margin 
+(Selling at a Maximmum Loss), or whenever 
+the actual price goes below the last low
+(The uptrend will have finished).
+
+At a loss:
+
+- Take the code responsible for selling 
+at a loss out; it sells because we're 
+0.9 * lowest_low, instead of that, we'll 
+sell inmediately at the lowest low, because 
+that way we're always in an uptrend. 
+
+
 
 

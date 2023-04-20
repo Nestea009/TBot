@@ -78,7 +78,7 @@ def WaitForRise():
   while true_var == True: #Wait for a rise to buy
     actual_price = FindPrice()
 
-    if actual_price > (initial_value * 1.05): #(CHANGE VALUE LATER) If rise, then buy
+    if actual_price > (initial_value * 1.0001): #(CHANGE VALUE LATER) If rise, then buy
       return actual_price # A rise has been found
 
     else: 
@@ -90,15 +90,15 @@ def WaitForRise():
       count = 0
       
 
-def WaitForFall():  # Probably Wrong
+def WaitForFall():  
   true_var = True
   count = 0
   initial_value = FindPrice()
 
-  while true_var == True: #Wait for a fall
+  while true_var == True: 
     actual_price = FindPrice()
 
-    if actual_price < (initial_value * 0.95): #(CHANGE VALUE LATER) If fall, then sell
+    if actual_price < (initial_value * 0.9999): #(CHANGE VALUE LATER) If fall, then sell
       return actual_price # A fall has been found
         
     else: 
@@ -110,8 +110,7 @@ def WaitForFall():  # Probably Wrong
       count = 0
 
 def FindHighestHigh():
-  #Find 5 values without loosing 15% of the Lowest Low and the highest will be the initial highest high. 
-  #initial_highest_high = (highest value)
+  initial_highest_high = WaitForFall()
   return initial_highest_high
 
 
@@ -120,49 +119,71 @@ def UptrendDetector():
   
   while True:
     first_low = WaitForRise()
+    print("First Low = ", first_low)
 
     first_high = WaitForFall()
+    print("First High = ", first_high)
     
     new_low = WaitForRise()
+    print("New Low = ", new_low)
 
     new_high = WaitForFall()
+    print("New High = ", new_high)
 
     if (new_high > first_high) and (new_low > first_low):
       return True
 
-def Strategy(counter):
+def Strategy():
   while True:
-    uptrend = UptrendDetector()
-    counter = 0
+    uptrend = UptrendDetector()   
+    counter = 0       
+    new_HH_found = False
 
-    while uptrend == True:
+    while uptrend == True:    #If we're on an uptrend
 
       actual_price = FindPrice()
 
       if counter == 0: 
-        lowest_low = PlaceBuyAAPL(actual_price)
-        print("Looking for a window...")
-        last_highest_high = FindHighestHigh()
+        print("Looking for a window...")    # Look for a window
+        initial_highest_high = FindHighestHigh()
+        last_highest_high = initial_highest_high
         print("Window found!")
+        WaitForRise()
+        lowest_low = PlaceBuyAAPL(actual_price)   # Buy at the first rise you see
         counter += 1
 
-      window = last_highest_high - lowest_low
-
-      if (actual_price > last_highest_high) and (actual_price !> (initial_highest_high * 1.25)):
-        last_highest_high = actual_price 
-      elif actual_price > (initial_highest_high * 1.25)
-        higher_high = actual price 
-
-      if actual_price < (lowest_low * 0.9):
-        PlaceSellAPPL()
-        counter = 0 #Revise this
+      window = last_highest_high - lowest_low   # Define our window
+      print("The current window is of a ", window, " difference.")
+      
+      if actual_price < (lowest_low * 0.9):   # If we lost 10% of the money, sell at a loss
+        PlaceSellAPPL()   # Revise all of this, because Risk == Gainz
         print ("Sold at a loss")
+        uptrend = False
 
-      print(actual_price)
-      time.sleep(30)
+      if (actual_price > last_highest_high) and (actual_price < (initial_highest_high * 1.25)):
+         last_highest_high = actual_price     # If you find a higher high, set it as such
+      
+      if actual_price > (initial_highest_high * 1.25):    # If wou find a high high, activate new_HH_found
+         last_highest_high = actual_price 
+         new_HH_found = True
+
+      if new_HH_found == False:   # If the actual price goes below half of our window, sell at a Minimmal Win
+        if (actual_price < (lowest_low + (window * 0.5))):
+          PlaceSellAPPL(actual_price)
+          print("Sold at a Minimmum Win (", window * 0.5, "% win)")
+          uptrend = False
+    
+      if new_HH_found == True: # Same as before, but with a 90% of the window because new_HH_found is true
+        if (actual_price < (lowest_low + (window * 0.9))):    # Revise this, we're missing on winning opportunities
+          PlaceSellAPPL(actual_price)
+          print("Sold at a Great Win (", window * 0.9, "% win) !")
+          uptrend = False
+        
+      print(actual_price)   #Print and repeat
+      time.sleep(20)
 
 
 if market_status == True:
-  Strategy(counter)
+  Strategy()
 else: 
   print("Market is down, cannot buy.")
