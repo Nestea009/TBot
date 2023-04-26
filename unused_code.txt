@@ -56,3 +56,23 @@ Stuff to do
     #Rule 3
     #If market is going to close, sell (?)
 
+
+
+
+
+      if actual_price > (initial_highest_high * 1.25):    # If wou find a high high, activate new_HH_found
+         last_highest_high = actual_price 
+         new_HH_found = True
+
+      if new_HH_found == False:   # If the actual price goes below half of our window, sell at a Minimmal Win
+        if (actual_price < (lowest_low + (window * 0.5))):
+          PlaceSellAPPL(actual_price)
+          print("Sold at a Minimmum Win (", window * 0.5, "% win)")
+          uptrend = False
+    
+      if new_HH_found == True: # Same as before, but with a 90% of the window because new_HH_found is true
+        if (actual_price < (lowest_low + (window * 0.9))):    # Revise this, we're missing on winning opportunities
+          PlaceSellAPPL(actual_price)
+          print("Sold at a Great Win (", window * 0.9, "% win) !")
+          uptrend = False
+        

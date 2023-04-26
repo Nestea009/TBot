@@ -70,7 +70,7 @@ def FindPrice():
   return actual_price
 
 
-def WaitForRise(): 
+def WaitForRise():      #ALL OF THIS IS FLOOD
   true_var = True
   count = 0
   initial_value = FindPrice()
@@ -85,12 +85,12 @@ def WaitForRise():
       count += 1
       time.sleep(10)
 
-    if count >= 20:
+    if count >= 5:
       initial_value = FindPrice()
       count = 0
       
 
-def WaitForFall():  
+def WaitForFall():         #ALL OF THIS IS FLOOD
   true_var = True
   count = 0
   initial_value = FindPrice()
@@ -103,9 +103,9 @@ def WaitForFall():
         
     else: 
       count += 1
-      time.sleep(15)
+      time.sleep(10)
 
-    if count >= 20:
+    if count >= 5:
       initial_value = FindPrice()
       count = 0
 
@@ -133,6 +133,10 @@ def UptrendDetector():
     if (new_high > first_high) and (new_low > first_low):
       return True
 
+def FindLow(): 
+  return "ERR" #For this to work we need 2 highs
+  
+
 def Strategy():
   while True:
     uptrend = UptrendDetector()   
@@ -150,35 +154,34 @@ def Strategy():
         print("Window found!")
         WaitForRise()
         lowest_low = PlaceBuyAAPL(actual_price)   # Buy at the first rise you see
+        last_low = lowest_low
         counter += 1
 
       window = last_highest_high - lowest_low   # Define our window
       print("The current window is of a ", window, " difference.")
-      
-      if actual_price < (lowest_low * 0.9):   # If we lost 10% of the money, sell at a loss
+       
+      if actual_price < lowest_low * 0.99:   # If we lost  money, sell at a loss (0.99 is for the initial price)
         PlaceSellAPPL()   # Revise all of this, because Risk == Gainz
-        print ("Sold at a loss")
+        print ("Sold at the lowest low, only lost tramit fees")
         uptrend = False
 
       if (actual_price > last_highest_high) and (actual_price < (initial_highest_high * 1.25)):
          last_highest_high = actual_price     # If you find a higher high, set it as such
       
-      if actual_price > (initial_highest_high * 1.25):    # If wou find a high high, activate new_HH_found
-         last_highest_high = actual_price 
-         new_HH_found = True
+      #Execute the following if we detect a new high:
+      #--------------------------------------------------------------------------------------------------------
+      new_low = FindLow() # Make the function look for a low for like 10s, if it doestn't find, return 0
 
-      if new_HH_found == False:   # If the actual price goes below half of our window, sell at a Minimmal Win
-        if (actual_price < (lowest_low + (window * 0.5))):
-          PlaceSellAPPL(actual_price)
-          print("Sold at a Minimmum Win (", window * 0.5, "% win)")
+      if new_low != 0:
+        if new_low < last_low: 
+          WaitForFall()
+          PlaceSellAPPL()
+          print("Sold because uptrend is over")
           uptrend = False
-    
-      if new_HH_found == True: # Same as before, but with a 90% of the window because new_HH_found is true
-        if (actual_price < (lowest_low + (window * 0.9))):    # Revise this, we're missing on winning opportunities
-          PlaceSellAPPL(actual_price)
-          print("Sold at a Great Win (", window * 0.9, "% win) !")
-          uptrend = False
-        
+        elif new_low > last_low:
+          last_low = new_low
+      #--------------------------------------------------------------------------------------------------------
+
       print(actual_price)   #Print and repeat
       time.sleep(20)
 
