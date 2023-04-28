@@ -163,5 +163,17 @@ finds a high or a low. For that we can just make a high and
 low detector and asign a variable that becomes true if 
 it finds one. 
 
-- 
+- (For now) There is no way to run a function within 
+a script without it taking time, that is the only issue 
+we have right now. 
+
+#RealMain.py
+
+if Low == True:
+  whatever
+
+#Main.py 
+
+if FindLow() == True:
+  Low = True
 

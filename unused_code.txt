@@ -56,10 +56,6 @@ Stuff to do
     #Rule 3
     #If market is going to close, sell (?)
 
-
-
-
-
       if actual_price > (initial_highest_high * 1.25):    # If wou find a high high, activate new_HH_found
          last_highest_high = actual_price 
          new_HH_found = True
