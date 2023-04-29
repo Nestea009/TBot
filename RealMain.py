@@ -185,8 +185,28 @@ def Strategy():
       print(actual_price)   #Print and repeat
       time.sleep(20)
 
+def Test():       # ERASE LATER
+  while True:
+    with open('High.txt', 'r') as f:
+        content = f.read().strip()
+        if content == 'High':
+            print("Sell!!")
+            with open("High.txt", "w") as f:
+                content = f.write("")
+
+    with open("Low.txt", "r") as f:
+      content = f.read().strip()
+      if content == "Low":
+        print("Buy!!")
+        with open("Low.txt", "w") as f:
+            content = f.write("")
+
+    time.sleep(3)
+
 
 if market_status == True:
-  Strategy()
+  #Strategy()
+  print("oiasf")
 else: 
+  Test()
   print("Market is down, cannot buy.")
