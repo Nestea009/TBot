@@ -10,7 +10,7 @@ last_trade_url = f"https://data.alpaca.markets/v2/stocks/{symbol}/trades/latest"
 
 headers = {
     'APCA-API-KEY-ID': API_KEY,
-    'APCA-API-SECRET-KEY': API_SECRET,
+    'APCA-API-SECRET-KEY': API_SECRET
 }
 
 response = requests.get('https://paper-api.alpaca.markets/v2/clock', headers=headers)
@@ -187,6 +187,7 @@ def Strategy():
 
 def Test():       # ERASE LATER
   while True:
+    print(FindPrice())
     with open('High.txt', 'r') as f:
         content = f.read().strip()
         if content == 'High':
@@ -206,7 +207,7 @@ def Test():       # ERASE LATER
 
 if market_status == True:
   #Strategy()
-  print("oiasf")
+  Test()
 else: 
   Test()
   print("Market is down, cannot buy.")
