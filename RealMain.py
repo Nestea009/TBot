@@ -133,10 +133,6 @@ def UptrendDetector():
     if (new_high > first_high) and (new_low > first_low):
       return True
 
-def FindLow(): 
-  return "ERR" #For this to work we need 2 highs
-  
-
 def Strategy():
   while True:
     uptrend = UptrendDetector()   
@@ -161,27 +157,41 @@ def Strategy():
       print("The current window is of a ", window, " difference.")
        
       if actual_price < lowest_low * 0.99:   # If we lost  money, sell at a loss (0.99 is for the initial price)
-        PlaceSellAPPL()   # Revise all of this, because Risk == Gainz
+        PlaceSellAPPL()   
         print ("Sold at the lowest low, only lost tramit fees")
         uptrend = False
-
-      if (actual_price > last_highest_high) and (actual_price < (initial_highest_high * 1.25)):
-         last_highest_high = actual_price     # If you find a higher high, set it as such
       
-      #Execute the following if we detect a new high:
-      #--------------------------------------------------------------------------------------------------------
-      new_low = FindLow() # Make the function look for a low for like 10s, if it doestn't find, return 0
+      with open('High.txt', 'r') as f:  #Every time we find a High
+          content = f.read().strip()
+          if content == 'High':
+            print("Found a High")
+            new_high = FindPrice()
 
-      if new_low != 0:
-        if new_low < last_low: 
-          WaitForFall()
-          PlaceSellAPPL()
-          print("Sold because uptrend is over")
-          uptrend = False
-        elif new_low > last_low:
-          last_low = new_low
-      #--------------------------------------------------------------------------------------------------------
+          if new_high < last_highest_high:  #If we are below the last high, sell
+            PlaceSellAPPL(actual_price)
+            print("Sold because uptrend is over (new lower high)")
+            uptrend = False
+          elif new_high >= last_highest_high:
+            last_highest_high = actual_price     #If we're not, tag it as the new last high
 
+          with open("High.txt", "w") as f:
+                content = f.write("")
+
+      with open("Low.txt", "r") as f: #Every time we find a Low
+          content = f.read().strip()
+          if content == "Low":
+            print("Found a Low")
+            new_low = FindPrice(actual_price)
+            if new_low < last_low:  #If we are below the last low, sell
+              WaitForFall()
+              PlaceSellAPPL()
+              print("Sold because uptrend is over (new lower low)")
+              uptrend = False
+            elif new_low >= last_low:  #If we're not, tag it as the new last low
+              last_low = new_low
+            with open("Low.txt", "w") as f:
+                content = f.write("")
+       
       print(actual_price)   #Print and repeat
       time.sleep(20)
 
@@ -206,8 +216,8 @@ def Test():       # ERASE LATER
 
 
 if market_status == True:
-  #Strategy()
-  Test()
+  Strategy()
+  #Test()
 else: 
-  Test()
+  #Test()
   print("Market is down, cannot buy.")
