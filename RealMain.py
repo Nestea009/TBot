@@ -202,7 +202,7 @@ def Test():       # ERASE LATER
         with open("Low.txt", "w") as f:
             content = f.write("")
 
-    time.sleep(3)
+    time.sleep(20)
 
 
 if market_status == True:

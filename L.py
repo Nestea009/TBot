@@ -37,8 +37,27 @@ def WaitForRise():      #ALL OF THIS IS FLOOD
       count = 0
 
 while True: 
-        WaitForRise()
-        with open('Low.txt', 'w') as f:
-                f.write('Low')
-                print("Found a Low!!")
-        time.sleep(5)
+  true_var = True
+  count = 0
+  initial_value = FindPrice()
+
+  while true_var == True: #Wait for a rise to buy
+    actual_price = FindPrice()
+
+    if actual_price > (initial_value * 1.0001): #(CHANGE VALUE LATER) If rise, then buy
+      count = 0
+      initial_value = actual_price # A rise has been found
+      true_var = False
+
+    else: 
+      count += 1
+      time.sleep(10)
+
+    if count >= 5:
+      initial_value = FindPrice()
+      count = 0
+      
+  with open('Low.txt', 'w') as f:
+        f.write('Low')
+        print("Found a Low!!")
+  time.sleep(5)

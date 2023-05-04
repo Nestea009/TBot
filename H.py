@@ -17,7 +17,7 @@ def FindPrice():
 
   return actual_price
 
-def WaitForFall():         #ALL OF THIS IS FLOOD
+while True: 
   true_var = True
   count = 0
   initial_value = FindPrice()
@@ -26,7 +26,9 @@ def WaitForFall():         #ALL OF THIS IS FLOOD
     actual_price = FindPrice()
 
     if actual_price < (initial_value * 0.9999): #(CHANGE VALUE LATER) If fall, then sell
-      return actual_price # A fall has been found
+      initial_value = actual_price
+      count = 0
+      true_var = False
         
     else: 
       count += 1
@@ -36,9 +38,7 @@ def WaitForFall():         #ALL OF THIS IS FLOOD
       initial_value = FindPrice()
       count = 0
 
-while True: 
-        WaitForFall()
-        with open('High.txt', 'w') as f:
-                f.write('High')
-                print("Found a High!!")
-        time.sleep(5)
+  with open('High.txt', 'w') as f:
+        f.write('High')
+        print("Found a High!!")
+  time.sleep(5)
