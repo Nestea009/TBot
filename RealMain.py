@@ -61,6 +61,7 @@ def PlaceSellAPPL(actual_price):
 
   return actual_price
 
+
 def FindPrice():
   current = requests.get(last_trade_url, headers=headers)
   current_json = current.json()
@@ -109,11 +110,6 @@ def WaitForFall():         #ALL OF THIS IS FLOOD
       initial_value = FindPrice()
       count = 0
 
-def FindHighestHigh():
-  initial_highest_high = WaitForFall()
-  return initial_highest_high
-
-
 def UptrendDetector():
   print("Waiting for an uptrend to buy...")
   
@@ -145,7 +141,7 @@ def Strategy():
 
       if counter == 0: 
         print("Looking for a window...")    # Look for a window
-        initial_highest_high = FindHighestHigh()
+        initial_highest_high = WaitForFall()
         last_highest_high = initial_highest_high
         print("Window found!")
         WaitForRise()
