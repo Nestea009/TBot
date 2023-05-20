@@ -152,7 +152,7 @@ def Strategy():
       window = last_highest_high - lowest_low   # Define our window
       print("The current window is of a ", window, " difference.")
        
-      if actual_price < lowest_low * 0.99:   # If we lost  money, sell at a loss (0.99 is for the initial price)
+      if actual_price < last_low * 0.99:   # If we lost  money, sell at a loss (0.99 is for the initial price)
         PlaceSellAPPL()   
         print ("Sold at the lowest low, only lost tramit fees")
         uptrend = False

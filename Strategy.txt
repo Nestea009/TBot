@@ -51,7 +51,7 @@ until it reaches 125% of the initial highest high)
 Problem: Finding a Highest High
 
 - Besides a highest high being easily defined, it is hard to 
-determine when one has happened via numbers. If we define it 
+determine when one has happened via code. If we define it 
 as a fall from the previous price we risk perpetual loss.
 (It could lose at a slower rate than we need to say that 
 a highest high has happened)
@@ -129,7 +129,7 @@ lead to problems. However, if we use our
 rise and fall funcitions for now, I believe 
 we can avoid the problem.
 
-In order to sell we will check if the new low is lower than the last low, if it is sell
+In order to sell we will check if the new low is lower than the last low, if it is 
 (As far as I'm concerned) we can look for a fall, check the last low and if the 
 last condition is met sell (that way we sell at a rise)
 
