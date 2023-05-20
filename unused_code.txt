@@ -72,3 +72,21 @@ Stuff to do
           print("Sold at a Great Win (", window * 0.9, "% win) !")
           uptrend = False
         
+  def Test():       # ERASE LATER
+  while True:
+    print(FindPrice())
+    with open('High.txt', 'r') as f:
+        content = f.read().strip()
+        if content == 'High':
+            print("Sell!!")
+            with open("High.txt", "w") as f:
+                content = f.write("")
+
+    with open("Low.txt", "r") as f:
+      content = f.read().strip()
+      if content == "Low":
+        print("Buy!!")
+        with open("Low.txt", "w") as f:
+            content = f.write("")
+
+    time.sleep(20)

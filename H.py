@@ -40,5 +40,4 @@ while True:
 
   with open('High.txt', 'w') as f:
         f.write('High')
-        print("Found a High!!")
   time.sleep(5)

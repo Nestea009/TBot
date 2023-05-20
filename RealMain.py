@@ -157,9 +157,9 @@ def Strategy():
         print ("Sold at the lowest low, only lost tramit fees")
         uptrend = False
       
-      with open('High.txt', 'r') as f:  #Every time we find a High
+      with open('High.txt', 'r') as f:  
           content = f.read().strip()
-          if content == 'High':
+          if content == 'High':         #Every time we find a High
             print("Found a High")
             new_high = FindPrice()
 
@@ -173,9 +173,9 @@ def Strategy():
           with open("High.txt", "w") as f:
                 content = f.write("")
 
-      with open("Low.txt", "r") as f: #Every time we find a Low
+      with open("Low.txt", "r") as f: 
           content = f.read().strip()
-          if content == "Low":
+          if content == "Low":          #Every time we find a Low
             print("Found a Low")
             new_low = FindPrice(actual_price)
             if new_low < last_low:  #If we are below the last low, sell
@@ -191,29 +191,9 @@ def Strategy():
       print(actual_price)   #Print and repeat
       time.sleep(20)
 
-def Test():       # ERASE LATER
-  while True:
-    print(FindPrice())
-    with open('High.txt', 'r') as f:
-        content = f.read().strip()
-        if content == 'High':
-            print("Sell!!")
-            with open("High.txt", "w") as f:
-                content = f.write("")
-
-    with open("Low.txt", "r") as f:
-      content = f.read().strip()
-      if content == "Low":
-        print("Buy!!")
-        with open("Low.txt", "w") as f:
-            content = f.write("")
-
-    time.sleep(20)
 
 
 if market_status == True:
   Strategy()
-  #Test()
 else: 
-  #Test()
   print("Market is down, cannot buy.")

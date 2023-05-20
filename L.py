@@ -59,5 +59,4 @@ while True:
       
   with open('Low.txt', 'w') as f:
         f.write('Low')
-        print("Found a Low!!")
   time.sleep(5)
