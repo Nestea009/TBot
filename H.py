@@ -25,7 +25,7 @@ while True:
   while true_var == True: 
     actual_price = FindPrice()
 
-    if actual_price < (initial_value * 0.9999): #(CHANGE VALUE LATER) If fall, then sell
+    if actual_price < (initial_value * 0.9967): # If fall, then sell
       initial_value = actual_price
       count = 0
       true_var = False

@@ -100,18 +100,21 @@ def UptrendDetector():
   
   while True:
     first_low = WaitForRise()
-    print("First Low = ", first_low)
+    #print("First Low = ", first_low)
 
     first_high = WaitForFall()
-    print("First High = ", first_high)
+    #print("First High = ", first_high)
     
     new_low = WaitForRise()
-    print("New Low = ", new_low)
+    #print("New Low = ", new_low)
 
     new_high = WaitForFall()
-    print("New High = ", new_high)
+    #print("New High = ", new_high)
 
-    if (new_high > first_high) and (new_low > first_low):
+    final_low = WaitForRise()
+    #print("Final Low = ", final_low)
+
+    if (new_high > first_high * 0.999) and (new_low > first_low * 0.999) and (final_low > new_low * 0.999):
       return True
 
 def Strategy():
@@ -136,13 +139,12 @@ def Strategy():
           initial_highest_high = WaitForFall()
           last_highest_high = initial_highest_high
           print("Window found!")
-          WaitForRise()
           lowest_low = PlaceBuyAAPL(actual_price)   # Buy at the first rise you see
           last_low = lowest_low
           counter += 1
 
         window = last_highest_high - lowest_low   # Define our window
-        print("The current window is of a ", window, " difference.")
+        #print("The current window is of a ", window, " difference.")
         
         if actual_price < last_low * 0.99:   # If we lost  money, sell at a loss (0.99 is for the initial price)
           PlaceSellAPPL()   
@@ -152,7 +154,7 @@ def Strategy():
         with open('txt_files/High.txt', 'r') as f:  
             content = f.read().strip()
             if content == 'High':         #Every time we find a High
-              print("Found a High")
+              #print("Found a High")
               new_high = FindPrice()
 
             if new_high < last_highest_high:  #If we are below the last high, sell
@@ -168,7 +170,7 @@ def Strategy():
         with open("txt_files/Low.txt", "r") as f: 
             content = f.read().strip()
             if content == "Low":          #Every time we find a Low
-              print("Found a Low")
+              #print("Found a Low")
               new_low = FindPrice(actual_price)
               if new_low < last_low:  #If we are below the last low, sell
                 WaitForFall()
@@ -185,7 +187,7 @@ def Strategy():
             server_status = content
 
         
-        print(actual_price)   #Print and repeat
+        #print(actual_price)   #Print and repeat
         time.sleep(20)
 
 Strategy()

@@ -17,25 +17,6 @@ def FindPrice():
 
   return actual_price
 
-def WaitForRise():      #ALL OF THIS IS FLOOD
-  true_var = True
-  count = 0
-  initial_value = FindPrice()
-
-  while true_var == True: #Wait for a rise to buy
-    actual_price = FindPrice()
-
-    if actual_price > (initial_value * 1.0001): #(CHANGE VALUE LATER) If rise, then buy
-      return actual_price # A rise has been found
-
-    else: 
-      count += 1
-      time.sleep(10)
-
-    if count >= 5:
-      initial_value = FindPrice()
-      count = 0
-
 while True: 
   true_var = True
   count = 0
@@ -44,7 +25,7 @@ while True:
   while true_var == True: #Wait for a rise to buy
     actual_price = FindPrice()
 
-    if actual_price > (initial_value * 1.0001): #(CHANGE VALUE LATER) If rise, then buy
+    if actual_price > (initial_value * 1.0033): #(CHANGE VALUE LATER) If rise, then buy
       count = 0
       initial_value = actual_price # A rise has been found
       true_var = False
