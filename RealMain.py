@@ -3,7 +3,6 @@ import time
 
 API_KEY = "PKMRS0PD5QOPSB14455X"
 API_SECRET = "RooSe7SdHmP3vQB1cshk2LxHZ5vY2lbjDu7v5cWD"
-market_status = False
 BASIC_URL = "https://paper-api.alpaca.markets/v2"
 symbol = "AAPL"
 last_trade_url = f"https://data.alpaca.markets/v2/stocks/{symbol}/trades/latest"
@@ -12,20 +11,6 @@ headers = {
     'APCA-API-KEY-ID': API_KEY,
     'APCA-API-SECRET-KEY': API_SECRET
 }
-
-response = requests.get('https://paper-api.alpaca.markets/v2/clock', headers=headers)
-
-if response.status_code == 200: 
-  clock_info = response.json()
-else:
-  print("Couldn't connect to the server...")
-
-if clock_info['is_open'] == True:
-  print("The Market is open!")
-  market_status = True
-else:
-  print("The Market is closed!")
-
 
 def PlaceBuyAAPL(actual_price):
   order_data = {
@@ -131,69 +116,76 @@ def UptrendDetector():
 
 def Strategy():
   while True:
-    uptrend = UptrendDetector()   
-    counter = 0       
-    new_HH_found = False
 
-    while uptrend == True:    #If we're on an uptrend
+    with open("txt_files/server_status.txt", "r") as f: 
+        content = f.read().strip()
+        server_status = content
 
-      actual_price = FindPrice()
+    while server_status == "On":
 
-      if counter == 0: 
-        print("Looking for a window...")    # Look for a window
-        initial_highest_high = WaitForFall()
-        last_highest_high = initial_highest_high
-        print("Window found!")
-        WaitForRise()
-        lowest_low = PlaceBuyAAPL(actual_price)   # Buy at the first rise you see
-        last_low = lowest_low
-        counter += 1
+      uptrend = UptrendDetector()   
+      counter = 0       
+      new_HH_found = False
 
-      window = last_highest_high - lowest_low   # Define our window
-      print("The current window is of a ", window, " difference.")
-       
-      if actual_price < last_low * 0.99:   # If we lost  money, sell at a loss (0.99 is for the initial price)
-        PlaceSellAPPL()   
-        print ("Sold at the lowest low, only lost tramit fees")
-        uptrend = False
-      
-      with open('High.txt', 'r') as f:  
-          content = f.read().strip()
-          if content == 'High':         #Every time we find a High
-            print("Found a High")
-            new_high = FindPrice()
+      while uptrend == True:    #If we're on an uptrend
 
-          if new_high < last_highest_high:  #If we are below the last high, sell
-            PlaceSellAPPL(actual_price)
-            print("Sold because uptrend is over (new lower high)")
-            uptrend = False
-          elif new_high >= last_highest_high:
-            last_highest_high = actual_price     #If we're not, tag it as the new last high
+        actual_price = FindPrice()
 
-          with open("High.txt", "w") as f:
-                content = f.write("")
+        if counter == 0: 
+          print("Looking for a window...")    # Look for a window
+          initial_highest_high = WaitForFall()
+          last_highest_high = initial_highest_high
+          print("Window found!")
+          WaitForRise()
+          lowest_low = PlaceBuyAAPL(actual_price)   # Buy at the first rise you see
+          last_low = lowest_low
+          counter += 1
 
-      with open("Low.txt", "r") as f: 
-          content = f.read().strip()
-          if content == "Low":          #Every time we find a Low
-            print("Found a Low")
-            new_low = FindPrice(actual_price)
-            if new_low < last_low:  #If we are below the last low, sell
-              WaitForFall()
-              PlaceSellAPPL()
-              print("Sold because uptrend is over (new lower low)")
+        window = last_highest_high - lowest_low   # Define our window
+        print("The current window is of a ", window, " difference.")
+        
+        if actual_price < last_low * 0.99:   # If we lost  money, sell at a loss (0.99 is for the initial price)
+          PlaceSellAPPL()   
+          print ("Sold at the lowest low, only lost tramit fees")
+          uptrend = False
+        
+        with open('txt_files/High.txt', 'r') as f:  
+            content = f.read().strip()
+            if content == 'High':         #Every time we find a High
+              print("Found a High")
+              new_high = FindPrice()
+
+            if new_high < last_highest_high:  #If we are below the last high, sell
+              PlaceSellAPPL(actual_price)
+              print("Sold because uptrend is over (new lower high)")
               uptrend = False
-            elif new_low >= last_low:  #If we're not, tag it as the new last low
-              last_low = new_low
-            with open("Low.txt", "w") as f:
-                content = f.write("")
-       
-      print(actual_price)   #Print and repeat
-      time.sleep(20)
+            elif new_high >= last_highest_high:
+              last_highest_high = actual_price     #If we're not, tag it as the new last high
 
+            with open("txt_files/High.txt", "w") as f:
+                  content = f.write("")
 
+        with open("txt_files/Low.txt", "r") as f: 
+            content = f.read().strip()
+            if content == "Low":          #Every time we find a Low
+              print("Found a Low")
+              new_low = FindPrice(actual_price)
+              if new_low < last_low:  #If we are below the last low, sell
+                WaitForFall()
+                PlaceSellAPPL()
+                print("Sold because uptrend is over (new lower low)")
+                uptrend = False
+              elif new_low >= last_low:  #If we're not, tag it as the new last low
+                last_low = new_low
+              with open("txt_files/Low.txt", "w") as f:
+                  content = f.write("")
 
-if market_status == True:
-  Strategy()
-else: 
-  print("Market is down, cannot buy.")
+        with open("txt_files/server_status.txt", "r") as f: 
+            content = f.read().strip()
+            server_status = content
+
+        
+        print(actual_price)   #Print and repeat
+        time.sleep(20)
+
+Strategy()

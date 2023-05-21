@@ -57,6 +57,6 @@ while True:
       initial_value = FindPrice()
       count = 0
       
-  with open('Low.txt', 'w') as f:
+  with open('txt_files/Low.txt', 'w') as f:
         f.write('Low')
   time.sleep(5)

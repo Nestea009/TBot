@@ -38,6 +38,6 @@ while True:
       initial_value = FindPrice()
       count = 0
 
-  with open('High.txt', 'w') as f:
+  with open('txt_files/High.txt', 'w') as f:
         f.write('High')
   time.sleep(5)
