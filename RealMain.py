@@ -64,7 +64,7 @@ def WaitForRise():      #ALL OF THIS IS FLOOD
   while true_var == True: #Wait for a rise to buy
     actual_price = FindPrice()
 
-    if actual_price > (initial_value * 1.0001): #(CHANGE VALUE LATER) If rise, then buy
+    if actual_price > (initial_value * 1.0033): #(CHANGE VALUE LATER) If rise, then buy
       return actual_price # A rise has been found
 
     else: 
@@ -84,7 +84,7 @@ def WaitForFall():         #ALL OF THIS IS FLOOD
   while true_var == True: 
     actual_price = FindPrice()
 
-    if actual_price < (initial_value * 0.9999): #(CHANGE VALUE LATER) If fall, then sell
+    if actual_price < (initial_value * 0.9967): #(CHANGE VALUE LATER) If fall, then sell
       return actual_price # A fall has been found
         
     else: 
