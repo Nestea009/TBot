@@ -5,8 +5,8 @@ symbol = "AAPL"
 last_trade_url = f"https://data.alpaca.markets/v2/stocks/{symbol}/trades/latest"
 
 headers = {
-    'APCA-API-KEY-ID': "PKMRS0PD5QOPSB14455X",
-    'APCA-API-SECRET-KEY': "RooSe7SdHmP3vQB1cshk2LxHZ5vY2lbjDu7v5cWD"
+  'APCA-API-KEY-ID': "PK42I07MH09F0ORJLLC1",
+  'APCA-API-SECRET-KEY': "3UQQh5eNtNRdlcUgespElmCD3JqW2iDOd6AiruZd"
 }
 
 def FindPrice():
