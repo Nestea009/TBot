@@ -15,7 +15,7 @@ headers = {
 def PlaceBuyAAPL(actual_price):
   order_data = {
       "symbol": "AAPL",
-      "qty": 30,
+      "qty": 1,
       "side": "buy",
       "type": "market",
       "time_in_force": "day",
@@ -32,7 +32,7 @@ def PlaceBuyAAPL(actual_price):
 def PlaceSellAPPL(actual_price):
   order_data = {
       "symbol": "AAPL",
-      "qty": 30,
+      "qty": 1,
       "side": "sell",
       "type": "market",
       "time_in_force": "day",
@@ -57,11 +57,10 @@ def FindPrice():
 
 
 def WaitForRise():      #ALL OF THIS IS FLOOD
-  true_var = True
   count = 0
   initial_value = FindPrice()
 
-  while true_var == True: #Wait for a rise to buy
+  while True: #Wait for a rise to buy
     actual_price = FindPrice()
 
     if actual_price > (initial_value * 1.0033): #(CHANGE VALUE LATER) If rise, then buy
@@ -77,11 +76,10 @@ def WaitForRise():      #ALL OF THIS IS FLOOD
       
 
 def WaitForFall():         #ALL OF THIS IS FLOOD
-  true_var = True
   count = 0
   initial_value = FindPrice()
 
-  while true_var == True: 
+  while True: 
     actual_price = FindPrice()
 
     if actual_price < (initial_value * 0.9967): #(CHANGE VALUE LATER) If fall, then sell
@@ -95,24 +93,30 @@ def WaitForFall():         #ALL OF THIS IS FLOOD
       initial_value = FindPrice()
       count = 0
 
-def UptrendDetector():
+def UptrendDetector():      
+
+  #Do we really need an uptrend? 
+  #Once we have detected the uptrend it could already be gone.
+  #Plus, the bot is supposed to make money wether we're on an uptrend
+  #or not, isn't it?
+
   print("Waiting for an uptrend to buy...")
   
   while True:
     first_low = WaitForRise()
-    #print("First Low = ", first_low)
+    print("First Low = ", first_low)
 
     first_high = WaitForFall()
-    #print("First High = ", first_high)
+    print("First High = ", first_high)
     
     new_low = WaitForRise()
-    #print("New Low = ", new_low)
+    print("New Low = ", new_low)
 
     new_high = WaitForFall()
-    #print("New High = ", new_high)
+    print("New High = ", new_high)
 
     final_low = WaitForRise()
-    #print("Final Low = ", final_low)
+    print("Final Low = ", final_low)
 
     if (new_high > first_high * 0.999) and (new_low > first_low * 0.999) and (final_low > new_low * 0.999):
       return True
@@ -139,8 +143,8 @@ def Strategy():
           initial_highest_high = WaitForFall()
           last_highest_high = initial_highest_high
           print("Window found!")
-          lowest_low = PlaceBuyAAPL(actual_price)   # Buy at the first rise you see
-          last_low = lowest_low
+          lowest_low = WaitForRise()           # Buy at the first rise you see
+          last_low = PlaceBuyAAPL(actual_price)
           counter += 1
 
         window = last_highest_high - lowest_low   # Define our window
@@ -185,9 +189,10 @@ def Strategy():
         with open("txt_files/server_status.txt", "r") as f: 
             content = f.read().strip()
             server_status = content
-
-        
+ 
         #print(actual_price)   #Print and repeat
         time.sleep(20)
+
+    time.sleep(30)
 
 Strategy()
