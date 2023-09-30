@@ -18,17 +18,16 @@ def FindPrice():
   return actual_price
 
 while True: 
-  true_var = True
   count = 0
   initial_value = FindPrice()
 
-  while true_var == True: #Wait for a rise to buy
+  while True: #Wait for a rise to buy
     actual_price = FindPrice()
 
     if actual_price > (initial_value * 1.0033): #(CHANGE VALUE LATER) If rise, then buy
       count = 0
       initial_value = actual_price # A rise has been found
-      true_var = False
+      break
 
     else: 
       count += 1
@@ -40,4 +39,4 @@ while True:
       
   with open('txt_files/Low.txt', 'w') as f:
         f.write('Low')
-  time.sleep(5)
+  time.sleep(21)

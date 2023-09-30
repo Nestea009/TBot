@@ -183,6 +183,7 @@ def Strategy():
                 uptrend = False
               elif new_low >= last_low:  #If we're not, tag it as the new last low
                 last_low = new_low
+                
               with open("txt_files/Low.txt", "w") as f:
                   content = f.write("")
 
